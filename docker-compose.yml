@@ -3,6 +3,36 @@ version: '3.8'
 services:
   postgres:
     # TODO: Add here
-
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - psql:/var/lib/pgsql/data
+    # ports:
+    #   - 5432:5432
   backend:
     # TODO: add here
+    build: .
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src
+          target: /home/node/app
+          ignore:
+            - node_modules/
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - PORT=3000
+      - HOST=postgres
+      - DATABASE=mydatabase
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+volumes:
+  psql:
