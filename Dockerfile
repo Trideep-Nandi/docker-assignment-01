@@ -8,6 +8,8 @@ WORKDIR /home/node/app
 
 COPY package*.json ./
 
+RUN npm update -g npm
+
 RUN npm install
 RUN npx browserslist@latest --update-db
 
